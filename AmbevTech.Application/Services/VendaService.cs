@@ -25,26 +25,41 @@ namespace AmbevTech.Application.Services
 
         public async Task<Venda> UpdateVendaAsync(Venda venda)
         {
-            await _vendaRepository.UpdateAsync(venda);
-            await _eventBus.PublishAsync(new CompraAlterada(venda));
-            return venda;
+            var vendaDb = await _vendaRepository.GetByIdAsync(venda.NumeroVenda);
+
+            if (vendaDb is not null)
+            {
+                await _vendaRepository.UpdateAsync(venda);
+                await _eventBus.PublishAsync(new CompraAlterada(venda));
+                return venda;
+            }
+
+            return null;
         }
 
         public async Task CancelVendaAsync(int numeroVenda)
         {
             var venda = await _vendaRepository.GetByIdAsync(numeroVenda);
-            venda.Cancelado = true;
-            await _vendaRepository.UpdateAsync(venda);
-            await _eventBus.PublishAsync(new CompraCancelada(numeroVenda));
+
+            if (venda is not null)
+            {
+                venda.Cancelado = true;
+                await _vendaRepository.UpdateAsync(venda);
+                await _eventBus.PublishAsync(new CompraCancelada(numeroVenda));
+            }
         }
 
-        public async Task CancelItemAsync(int itemId)
+        public async Task CancelItemAsync(int numeroVenda, int itemId)
         {
-            var item = await _vendaRepository.GetItemByIdAsync(itemId);
-            item.Cancelado = true;
-            await _vendaRepository.UpdateItemAsync(item);
-            await _eventBus.PublishAsync(new ItemCancelado(itemId));
+            var venda = await _vendaRepository.GetByIdAsync(numeroVenda);
+            bool itemExiste = venda.Itens.Any(i => i.Id == itemId);
+
+            if (itemExiste)
+            {
+                venda.Itens.FirstOrDefault(x => x.Id == itemId).Cancelado = true;
+                await _vendaRepository.UpdateAsync(venda);
+                await _eventBus.PublishAsync(new ItemCancelado(itemId));
+            }
         }
     }
-
 }

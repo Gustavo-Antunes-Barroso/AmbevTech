@@ -30,16 +30,5 @@ namespace AmbevTech.Infrastructure.Repositories
         {
             return await _context.Vendas.Include(v => v.Itens).FirstOrDefaultAsync(v => v.NumeroVenda == id);
         }
-
-        public async Task<ItemVenda> GetItemByIdAsync(int id)
-        {
-            return await _context.ItensVenda.FindAsync(id);
-        }
-
-        public async Task UpdateItemAsync(ItemVenda item)
-        {
-            _context.ItensVenda.Update(item);
-            await _context.SaveChangesAsync();
-        }
     }
 }

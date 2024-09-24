@@ -62,10 +62,10 @@ namespace AmbevTech.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPut("item/{id}")]
-        public async Task<IActionResult> CancelItem(int id)
+        [HttpPut("{id}/item/{itemId}")]
+        public async Task<IActionResult> CancelItem(int id, int itemId)
         {
-            await _vendaService.CancelItemAsync(id);
+            await _vendaService.CancelItemAsync(id, itemId);
             return Ok();
         }
     }

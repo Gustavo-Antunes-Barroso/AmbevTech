@@ -7,6 +7,6 @@ namespace AmbevTech.Application.Interfaces
         Task<Venda> CreateVendaAsync(Venda venda);
         Task<Venda> UpdateVendaAsync(Venda venda);
         Task CancelVendaAsync(int numeroVenda);
-        Task CancelItemAsync(int itemId);
+        Task CancelItemAsync(int numeroVenda, int itemId);
     }
 }
