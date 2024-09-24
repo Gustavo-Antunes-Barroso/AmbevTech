@@ -1,11 +1,7 @@
 ﻿using AmbevTech.Domain.Interfaces;
 using AmbevTech.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tingle.EventBus;
+using AmbevTech.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace AmbevTech.Infrastructure.Repositories
 {

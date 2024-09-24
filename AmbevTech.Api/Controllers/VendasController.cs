@@ -15,6 +15,11 @@ namespace AmbevTech.Api.Controllers
             _vendaService = vendaService;
         }
 
+        /// <summary>
+        /// Realiza a criação de uma venda
+        /// </summary>
+        /// <param name="venda"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<Venda>> CreateVenda(Venda venda)
         {
@@ -22,6 +27,12 @@ namespace AmbevTech.Api.Controllers
             return CreatedAtAction(nameof(CreateVenda), new { id = createdVenda.NumeroVenda }, createdVenda);
         }
 
+        /// <summary>
+        /// Realiza o update de uma venda
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="venda"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVenda(int id, Venda venda)
         {
@@ -34,6 +45,11 @@ namespace AmbevTech.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Realiza o cancelamento de uma venda
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> CancelVenda(int id)
         {
@@ -41,6 +57,11 @@ namespace AmbevTech.Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Realiza o cancelamento de um Item da venda
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPut("item/{id}")]
         public async Task<IActionResult> CancelItem(int id)
         {
