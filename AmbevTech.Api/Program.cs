@@ -25,15 +25,15 @@ internal class Program
         services.AddScoped<IVendaRepository, VendaRepository>();
         services.AddScoped<IVendaService, VendaService>();
 
-        //services.AddEventBus(builder =>
-        //{
-        //    builder.AddRabbitMqTransport(options =>
-        //    {
-        //        options.Hostname= "";
-        //        options.Username = "";
-        //        options.Password = "";
-        //    });
-        //});
+        services.AddEventBus(builder =>
+        {
+            builder.AddRabbitMqTransport(options =>
+            {
+                options.Hostname = "";
+                options.Username = "";
+                options.Password = "";
+            });
+        });
 
         services.AddSwaggerGen(c =>
         {
