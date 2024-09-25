@@ -13,8 +13,9 @@ namespace AmbevTech.Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Venda>().HasKey(x => x.NumeroVenda);
             modelBuilder.Entity<Venda>().ToTable("Vendas");
-            modelBuilder.Entity<ItemVenda>().ToTable("ItensVenda");
+            //modelBuilder.Entity<ItemVenda>().ToTable("ItensVenda");
         }
     }
 }

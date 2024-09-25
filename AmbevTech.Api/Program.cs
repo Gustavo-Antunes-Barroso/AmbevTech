@@ -1,3 +1,4 @@
+using AmbevTech.Api.Middleware;
 using AmbevTech.Application.Interfaces;
 using AmbevTech.Application.Services;
 using AmbevTech.Domain.Interfaces;
@@ -7,6 +8,7 @@ using AmbevTech.Infrastructure.Publisher;
 using AmbevTech.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Tingle.EventBus;
 
 internal class Program
@@ -14,6 +16,7 @@ internal class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
         var services = builder.Services;
 
         services.AddDbContext<VendasContext>(options =>
@@ -39,7 +42,11 @@ internal class Program
 
         services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
         services.AddScoped<IEventBus, EventBusRabbitMQ>();
+
         builder.Services.AddControllers();
+        builder.Services.AddSerilog();
+        builder.Services.AddExceptionHandler<ErrorHandlingMiddleware>();
+        builder.Services.AddProblemDetails();
 
         var app = builder.Build();
 
@@ -49,6 +56,8 @@ internal class Program
             c.SwaggerEndpoint("/swagger/v1/swagger.json",
                 "Vendas API");
         });
+
+        app.UseExceptionHandler(opt => { });
 
         app.UseHttpsRedirection();
 
