@@ -20,7 +20,7 @@ namespace AmbevTech.Application.Services
         public async Task<Venda> CreateVendaAsync(Venda venda)
         {
             Venda vendaDb = await _vendaRepository.GetByIdAsync(venda.NumeroVenda);
-            if(vendaDb is not null)
+            if (vendaDb is not null)
                 throw new BusinessException($"Venda {venda.NumeroVenda} já existente!");
 
             await _vendaRepository.AddAsync(venda);
@@ -51,12 +51,12 @@ namespace AmbevTech.Application.Services
             var venda = await ValidarVendaExistente(numeroVenda);
             bool itemExiste = venda.Itens.Any(i => i.Id == itemId);
 
-            if (itemExiste)
-            {
-                venda.Itens.FirstOrDefault(x => x.Id == itemId).Cancelado = true;
-                await _vendaRepository.UpdateAsync(venda);
-                await _eventBus.PublishAsync(new ItemCancelado(itemId));
-            }
+            if (!itemExiste)
+                throw new BusinessException($"Item {itemId} não existe na venda {numeroVenda}");
+
+            venda.Itens.FirstOrDefault(x => x.Id == itemId).Cancelado = true;
+            await _vendaRepository.UpdateAsync(venda);
+            await _eventBus.PublishAsync(new ItemCancelado(itemId));
         }
 
         private async Task<Venda> ValidarVendaExistente(int vendaId)

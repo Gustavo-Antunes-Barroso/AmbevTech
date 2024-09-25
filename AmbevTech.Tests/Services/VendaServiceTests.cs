@@ -93,7 +93,7 @@ public class VendaServiceTests
     }
 
     [Fact]
-    public async Task CancelItemAsync_ItemExists_ShouldCancelItem()
+    public async Task CancelItemAsync_ItemExiste_Sucess()
     {
         // Arrange
         int numeroVenda = 1;
@@ -121,7 +121,7 @@ public class VendaServiceTests
     }
 
     [Fact]
-    public async Task CancelItemAsync_ItemDoesNotExist_ShouldNotCancelItem()
+    public async Task CancelItemAsync_ItemNaoExiste_RetornaException()
     {
         // Arrange
         int numeroVenda = 1;
@@ -134,10 +134,9 @@ public class VendaServiceTests
 
         _vendaRepositoryMock.Setup(repo => repo.GetByIdAsync(numeroVenda)).ReturnsAsync(venda);
 
-        // Act
-        await _vendaService.CancelItemAsync(numeroVenda, itemId);
+        // Act && Assert
+        await Assert.ThrowsAsync<BusinessException>(() => _vendaService.CancelItemAsync(numeroVenda, itemId));
 
-        // Assert
         _vendaRepositoryMock.Verify(repo => repo.UpdateAsync(It.IsAny<Venda>()), Times.Never);
         _eventBusMock.Verify(bus => bus.PublishAsync(It.IsAny<ItemCancelado>()), Times.Never);
     }

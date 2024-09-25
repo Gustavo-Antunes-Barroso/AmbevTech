@@ -1,4 +1,5 @@
 ﻿using AmbevTech.Application.Interfaces;
+using AmbevTech.Domain.Exception;
 using AmbevTech.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,8 +24,15 @@ namespace AmbevTech.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Venda>> CreateVenda(Venda venda)
         {
-            var createdVenda = await _vendaService.CreateVendaAsync(venda);
-            return CreatedAtAction(nameof(CreateVenda), new { id = createdVenda.NumeroVenda }, createdVenda);
+            try
+            {
+                var createdVenda = await _vendaService.CreateVendaAsync(venda);
+                return CreatedAtAction(nameof(CreateVenda), new { id = createdVenda.NumeroVenda }, createdVenda);
+            }
+            catch (BusinessException ex) 
+            { 
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -36,13 +44,20 @@ namespace AmbevTech.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVenda(int id, Venda venda)
         {
-            if (id != venda.NumeroVenda)
+            if (venda.NumeroVenda <= 0)
             {
                 return BadRequest("Número da venda não informado!");
             }
 
-            await _vendaService.UpdateVendaAsync(venda);
-            return Ok();
+            try
+            {
+                await _vendaService.UpdateVendaAsync(venda);
+                return Ok();
+            }
+            catch (BusinessException ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -53,8 +68,15 @@ namespace AmbevTech.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> CancelVenda(int id)
         {
-            await _vendaService.CancelVendaAsync(id);
-            return Ok();
+            try
+            {
+                await _vendaService.CancelVendaAsync(id);
+                return Ok();
+            }
+            catch(BusinessException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -65,8 +87,15 @@ namespace AmbevTech.Api.Controllers
         [HttpPut("{id}/item/{itemId}")]
         public async Task<IActionResult> CancelItem(int id, int itemId)
         {
-            await _vendaService.CancelItemAsync(id, itemId);
-            return Ok();
+            try
+            {
+                await _vendaService.CancelItemAsync(id, itemId);
+                return Ok();
+            }
+            catch( BusinessException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
